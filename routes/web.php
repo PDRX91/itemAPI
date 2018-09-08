@@ -12,7 +12,9 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('index');
 });
+
+// Route::get('/', 'index.html');
 
 Route::resource('api/items', 'ItemsController');
