@@ -9,8 +9,41 @@
     <script src="https://code.jquery.com/jquery-3.1.0.js"></script>
     <script type="text/javascript">
         $(document).ready(()=>{
-            getItems()
+            getItems();
+            addListener();
         });
+
+        function addListener(){
+            $('#itemForm').on('submit', (e) => {
+            e.preventDefault();
+
+            let text = $('#text').val();
+            let body = $('#body').val();
+
+            addItem(text, body);
+            });
+
+            $('body').on('click', '.deleteLink', (e) =>{
+                e.preventDefault();
+
+                let id = $(this).data('id');
+                console.log(id);
+            })
+
+        }
+
+
+        function addItem(text, body){
+            $.ajax({
+                method: 'POST',
+                url: 'http://localhost:8000/api/items',
+                data: {text: text, body: body}
+            }).done((item)=>{
+                alert(`Item # ${item.id} added`);
+                location.reload();
+            })
+        }
+
         function getItems(){
                 $.ajax({
                     url: 'http://localhost:8000/api/items',
@@ -19,10 +52,11 @@
                     $.each(items, function(key, item){
                         output+=`
                             <li class="list-group-item">
-                                <strong>${item.text}: </strong>${item.body}
+                                <strong>${item.text}: </strong>${item.body} <a href="#" class="deleteLink" data-id="${item.id}">Delete</a>
                             </li>`;
                     })
                     $('#items').append(output);
+
                 })
             }
     </script>
@@ -46,6 +80,19 @@
         </nav>
     </div>
     <div class="container">
+        <h1>Add Item</h1>
+        <form action="" id="itemForm">
+            <div class="form-group">
+                <label >Text</label>
+                <input type="text" id="text" class="form-control">
+            </div>
+            <div class="form-group">
+                <label >Body</label>
+                <textarea id="body" class="form-control"></textarea>
+            </div>
+            <input type="submit" value="Submit" class="btn btn-primary">
+        </form>
+        <hr>
         <ul id="items" class="list-group"></ul>
     </div>
 </body>
